@@ -1,0 +1,76 @@
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: db_directory
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: directory
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - directory-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_directory
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 0
+      PMA_USER: root
+      PMA_PASSWORD: root_secret
+    ports:
+      - "8080:80"
+    networks:
+      - directory-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_directory
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=directory
+      - DB_USERNAME=user
+      - DB_PASSWORD=secret
+    networks:
+      - directory-network
+    depends_on:
+      - db
+
+  web:
+    image: nginx:alpine
+    container_name: web_directory
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - directory-network
+    depends_on:
+      - app
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  directory-network:
+    driver: bridge
