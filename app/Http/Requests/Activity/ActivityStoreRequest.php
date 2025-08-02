@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Building;
+namespace App\Http\Requests\Activity;
 
-use App\Dto\BuildingDto\BuildingUpdateDto;
+use App\Dto\Activity\ActivityStoreDto;
 use Illuminate\Foundation\Http\FormRequest;
 
-class BuildingUpdateRequest extends FormRequest
+class ActivityStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,18 +23,16 @@ class BuildingUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'address' => 'sometimes|string|max:255',
-            'latitude' => 'sometimes|numeric',
-            'longitude' => 'sometimes|numeric',
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:activities,id',
         ];
     }
 
-    public function toDto(): BuildingUpdateDto
+    public function toDto(): ActivityStoreDto
     {
-        return new BuildingUpdateDto(
-            $this->input('address'),
-            $this->input('latitude'),
-            $this->input('longitude')
+        return new ActivityStoreDto(
+            $this->input('name'),
+            $this->input('parent_id')
         );
     }
 }

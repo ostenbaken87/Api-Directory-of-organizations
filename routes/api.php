@@ -1,14 +1,24 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Activity\ActivityController;
+use App\Http\Controllers\Api\Building\BuildingController;
 
 
 Route::middleware('api.key')->group(function(){
+    
     //Building routes
-    Route::get('/building', [App\Http\Controllers\Api\Building\BuildingController::class, 'index']);
-    Route::post('/building', [App\Http\Controllers\Api\Building\BuildingController::class, 'store']);
-    Route::get('/building/{buildingId}', [App\Http\Controllers\Api\Building\BuildingController::class, 'show']);
-    Route::patch('/building/{buildingId}', [App\Http\Controllers\Api\Building\BuildingController::class, 'update']);
-    Route::delete('/building/{buildingId}', [App\Http\Controllers\Api\Building\BuildingController::class, 'destroy']);
+    Route::get('/building', [BuildingController::class, 'index']);
+    Route::post('/building', [BuildingController::class, 'store']);
+    Route::get('/building/{buildingId}', [BuildingController::class, 'show']);
+    Route::patch('/building/{buildingId}', [BuildingController::class, 'update']);
+    Route::delete('/building/{buildingId}', [BuildingController::class, 'destroy']);
+
+    //Activity route
+    Route::get('/activity', [ActivityController::class, 'index']);
+    Route::get('/activity/tree', [ActivityController::class, 'tree']);
+    Route::post('/activity', [ActivityController::class, 'store']);
+    Route::get('/activity/{activityId}', [ActivityController::class, 'show']);
+    Route::patch('/activity/{activityId}', [ActivityController::class, 'update']);
+    Route::delete('/activity/{activityId}', [ActivityController::class, 'destroy']);
 });
