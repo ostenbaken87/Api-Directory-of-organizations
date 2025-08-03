@@ -26,7 +26,7 @@ class BaseController extends Controller
     protected function defaultResponse(string|null $message, int $code):JsonResponse
     {
         return response()->json([
-            'success' => false,
+            'success' => true,
             'message' => $message
         ],$code);
     }
