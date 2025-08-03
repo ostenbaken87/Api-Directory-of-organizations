@@ -9,12 +9,36 @@ class BuildingSeeder extends Seeder
 {
     public function run(): void
     {
-        $buildings = [
+
+        $moscowBuildings = [
             [
-                'address' => 'г. Москва, ул. Ленина, д. 10, офис 5',
-                'latitude' => 55.7558,
-                'longitude' => 37.6176,
+                'address' => 'г. Москва, ул. Тверская, д. 10',
+                'latitude' => 55.7601,
+                'longitude' => 37.6065,
             ],
+            [
+                'address' => 'г. Москва, ул. Арбат, д. 25',
+                'latitude' => 55.7500,
+                'longitude' => 37.5900,
+            ],
+            [
+                'address' => 'г. Москва, Пресненская наб., д. 8',
+                'latitude' => 55.7480,
+                'longitude' => 37.5390,
+            ],
+            [
+                'address' => 'г. Москва, Ленинский пр-т, д. 32',
+                'latitude' => 55.7000,
+                'longitude' => 37.5700,
+            ],
+            [
+                'address' => 'г. Москва, ул. Новый Арбат, д. 15',
+                'latitude' => 55.7550,
+                'longitude' => 37.5800,
+            ]
+        ];
+
+        $otherCitiesBuildings = [
             [
                 'address' => 'г. Санкт-Петербург, Невский пр., д. 25',
                 'latitude' => 59.9343,
@@ -37,10 +61,23 @@ class BuildingSeeder extends Seeder
             ],
         ];
 
-        foreach ($buildings as $building) {
-            Building::create($building);
+        // Создаем московские здания
+        foreach ($moscowBuildings as $building) {
+            Building::firstOrCreate(
+                ['address' => $building['address']],
+                $building
+            );
         }
 
-        $this->command->info('Создано ' . count($buildings) . ' тестовых зданий.');
+        // Создаем здания в других городах
+        foreach ($otherCitiesBuildings as $building) {
+            Building::firstOrCreate(
+                ['address' => $building['address']],
+                $building
+            );
+        }
+
+        $total = Building::count();
+        $this->command->info("Создано {$total} тестовых зданий (5 в Москве)");
     }
 }

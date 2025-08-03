@@ -34,4 +34,21 @@ class CompanyRepository implements CompanyRepositoryInterface
         $company = $this->getById($id);
         $company->delete();
     }
+
+    public function getByBuilding(int $id): Collection
+    {
+        return Company::where('building_id', $id)->get();
+    }
+
+    public function getByActivity(int $id): Collection
+    {
+        return Company::whereHas('activities', function ($query) use ($id) {
+            $query->where('activities.id', $id);
+        })->get();
+    }
+
+    public function searchByName(string $query)
+    {
+        return Company::whereRaw('LOWER(name) LIKE ?', ['%'.strtolower($query).'%'])->get();
+    }
 }

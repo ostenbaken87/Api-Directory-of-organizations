@@ -15,7 +15,7 @@ class Activity extends Model
         'level'
     ];
 
-    public function patent(): BelongsTo
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }

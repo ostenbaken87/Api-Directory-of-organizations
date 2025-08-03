@@ -101,4 +101,19 @@ class CompanyService
             }
         }
     }
+
+    public function getByBuilding(int $buildingId): Collection
+    {
+        return $this->repository->getByBuilding($buildingId);
+    }
+
+    public function getByActivity(int $activityId): Collection
+    {
+        return $this->repository->getByActivity($activityId);
+    }
+
+    public function searchByName(string $query)
+    {
+        return $this->repository->searchByName($query);
+    }
 }

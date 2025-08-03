@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\Activity;
 
-use App\Models\Activity;
 use App\Services\ActivityService;
 use Illuminate\Http\JsonResponse;
+use App\Services\ActivitySearchService;
 use App\Http\Controllers\BaseController;
-use Illuminate\Database\Eloquent\Casts\Json;
 use App\Actions\Activity\ActivityStoreAction;
 use App\Actions\Activity\ActivityUpdateAction;
+use App\Http\Resources\Company\CompanyResource;
 use App\Http\Resources\Activity\ActivityResource;
 use App\Http\Resources\Activity\ActivityCollection;
 use App\Http\Requests\Activity\ActivityStoreRequest;
@@ -17,7 +17,8 @@ use App\Http\Requests\Activity\ActivityUpdateRequest;
 class ActivityController extends BaseController
 {
     public function __construct(
-        private ActivityService $service
+        private ActivityService $service,
+        private ActivitySearchService $searchService
     ) {}
 
     public function index(): ActivityCollection
@@ -62,5 +63,25 @@ class ActivityController extends BaseController
         return response()->json([
             'message' => "Activity by id: $activityId deleted successfully"
         ]);
+    }
+
+    public function searchByActivity(string $activityIdentifier): JsonResponse
+    {
+        try {
+            $companies = $this->searchService->searchByActivityWithChildren($activityIdentifier);
+
+            return response()->json([
+                'success' => true,
+                'activity' => $activityIdentifier,
+                'companies_count' => $companies->count(),
+                'companies' => CompanyResource::collection($companies)
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Activity not found'
+            ], 404);
+        }
     }
 }
