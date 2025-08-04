@@ -10,7 +10,7 @@ help:
 	@echo "  make migrate   - Выполнить миграции"
 	@echo "  make fresh-seed - Пересоздать БД с сидами"
 
-init: build up keygen
+init: build up
 	@echo "\033[32mПроект успешно инициализирован!\033[0m"
 
 build:
